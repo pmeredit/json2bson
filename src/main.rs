@@ -4,10 +4,11 @@ use bson::{Bson, encode_document};
 
 fn main() -> io::Result<()> {
     let mut buffer = String::new();
-    let stdin = io::stdin();
-    let mut handle = stdin.lock();
-
-    handle.read_to_string(&mut buffer)?;
+    {
+        let stdin = io::stdin();
+        let mut handle = stdin.lock();
+        handle.read_to_string(&mut buffer)?;
+    } // release lock on stdin
 
     // Parse the string of data into serde_json::Value.
     let v: Value = serde_json::from_str(&buffer)?;
