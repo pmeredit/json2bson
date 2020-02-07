@@ -13,13 +13,13 @@ fn main() -> io::Result<()> {
     // Parse the string of data into serde_json::Value.
     let v: Value = serde_json::from_str(&buffer)?;
     let stdout = io::stdout();
-    let mut stdout_handle = stdout.lock();
 
     match v {
         o@Value::Object(_) => {
             let serialized = Bson::from(o);
             match serialized {
                 Bson::Document(doc) => {
+                    let mut stdout_handle = stdout.lock();
                     encode_document(&mut stdout_handle, &doc).unwrap();
                 }
                 _ => (),
@@ -31,6 +31,7 @@ fn main() -> io::Result<()> {
                 let serialized = Bson::from(e.to_owned());
                 match serialized {
                     Bson::Document(doc) => {
+                        let mut stdout_handle = stdout.lock();
                         encode_document(&mut stdout_handle, &doc).unwrap();
                     }
                     _ => (),
